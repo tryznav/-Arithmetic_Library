@@ -15,18 +15,18 @@ typedef int64_t my_int64_t;
 #define FRACTIONAL_MAX      ((1ul<<FRACTION_BITS)-1)
 #define FRACTIONAL_MIN      (-1<<FRACTION_BITS)
 
-my_int32_t   fxd_add(my_int32_t a, my_int32_t b);
+my_int32_t  fxd_add(my_int32_t a, my_int32_t b);
 
-my_int32_t   fxd_sub(my_int32_t a, my_int32_t b);
+my_int32_t  fxd_sub(my_int32_t a, my_int32_t b);
 
-my_int32_t   fxd_mul(my_int32_t a, my_int32_t b);
+my_int32_t  fxd_mul(my_int32_t a, my_int32_t b);
 
-my_int32_t   fxd_mac(my_int32_t a, my_int32_t b);
+my_int64_t  fxd_mac(my_int64_t acum, my_int32_t b,  my_int32_t c);
 
-my_int32_t   fxd_msub(my_int32_t a, my_int32_t b);
+my_int32_t  fxd_msub(my_int32_t a, my_int32_t b);
 
-my_int32_t   fxd_abs(my_int32_t a);
+my_int32_t  fxd_abs(my_int32_t a);
 
-my_int32_t   fxd_neg(my_int32_t a);
+my_int32_t  fxd_neg(my_int32_t a);
 
 #endif /* colors.h */

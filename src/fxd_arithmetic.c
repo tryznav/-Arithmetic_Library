@@ -2,9 +2,8 @@
 
 #include "fxd_arithmetic.h"
 
+#include <math.h>
 #define BITS_TYPE32     31
-my_int32_t OveResflow;
-
 
 void binaryPrint(uint32_t num){
     uint32_t b = (1ul<<BITS_TYPE32);
@@ -26,36 +25,22 @@ void print_n(my_int32_t num){
     binaryPrint(tmp);
 }
 
+double fixed16_to_double(int32_t input)
+{
+    return ((double)input / (double)(1 << 31));
+}
+
 my_int32_t   fxd_add(int32_t a, int32_t b){
     my_int32_t res;
-    print_n(a);
-        printf("%d\n", a);
-    print_n(b);
-            printf("%d\n", b);
-    res = a + b;
-     printf("SUMM\n");
-    print_n(res);
-    print_n(FRACTIONAL_MIN);
-    printf("%d\n", FRACTIONAL_MIN);
-    if (((a ^ b) & FRACTIONAL_MIN) == 0)
-    {    
-    printf("(a ^ b)\n");
-    print_n((a ^ b));
-    print_n(((a ^ b) & FRACTIONAL_MIN));
-    printf("%d\n", FRACTIONAL_MIN);
-    printf("(res ^ a)\n");
-    print_n((res ^ a));
-    print_n((res ^ a) & FRACTIONAL_MIN);
-    printf("%d\n", FRACTIONAL_MIN);
-    print_n(FRACTIONAL_MIN);
-        if (((res ^ a) & FRACTIONAL_MIN))
-        {
 
-            res = (a < 0) ? FRACTIONAL_MIN : FRACTIONAL_MAX;
-            print_n(FRACTIONAL_MIN);
-            print_n(res);
-            printf("%d\n", FRACTIONAL_MIN);
-            OveResflow = 1;
+    res = a + b;
+
+    if (!((a ^ b) & FRACTIONAL_MIN))
+    {    
+
+        if ((res ^ a) & FRACTIONAL_MIN)
+        {
+            res = (a < 0) ? FRACTIONAL_MIN + 1: FRACTIONAL_MAX;
         }
     }
 
@@ -63,21 +48,45 @@ my_int32_t   fxd_add(int32_t a, int32_t b){
 
 }
 
+my_int32_t   fxd_add63(int64_t a, int64_t b){
+    my_int32_t res;
+
+    res = a + b;
+
+    if (!((a ^ b) & (-1<<63)))
+    {    
+
+        if ((res ^ a) & (-1<<63))
+        {
+            res = (a < 0) ? (-1<<63) + 1: ((1ul<<63)-1);
+        }
+    }
+    return res;
+
+}
+
+
+
+
+
+float fxt_to_flt(my_int32_t val){
+    return ((float)val / (float)(1u << FRACTION_BITS));
+}
+
+double fxt_to_flt64(my_int64_t val){
+    return ((double)val / (double)(1u << FRACTION_BITS));
+}
+
 my_int32_t   fxd_sub(my_int32_t a, my_int32_t b){
-    int32_t res;
+    int32_t res = 0;
 
     res = a - b;
-    printf("SUB\n");
-    print_n(res);
-    print_n(FRACTIONAL_MIN);
-    printf("%d\n", FRACTIONAL_MIN);
-
-    if (((a ^ b) & FRACTIONAL_MIN) != 0) 
+    
+    if (((a ^ b) & FRACTIONAL_MIN))
     {
         if ((res ^ a) & FRACTIONAL_MIN) 
         {
             res = (a < 0) ? FRACTIONAL_MIN : FRACTIONAL_MAX;
-            OveResflow = 1;
         }
     }
 
@@ -86,40 +95,48 @@ my_int32_t   fxd_sub(my_int32_t a, my_int32_t b){
 
 my_int32_t   fxd_mul(my_int32_t a, my_int32_t b){
     my_int32_t res = 0;
+    my_int64_t acum = a;
+
+    acum *= b;
+    acum += (1u << (FRACTION_BITS - 1));
+    acum >>= FRACTION_BITS;
+    res = (my_int32_t)acum;
     return res;
 
 }
 
-my_int32_t   fxd_mac(my_int32_t a, my_int32_t b){
+my_int64_t fxd_mac(my_int64_t a, my_int32_t b,  my_int32_t c){
+    my_int64_t acum = a;
+    acum *= b;
+    acum <<= 1;
+    acum = fxd_add63(acum, a); 
+    return acum;
+}
+
+my_int64_t fxd_mac(my_int32_t a, my_int32_t b,  my_int32_t c){
+    my_int64_t acum = a;
+    acum *= b;
+    acum += ((my_int64_t)c << FRACTION_BITS);
+
+    return acum;
+}
+
+my_int32_t   fxd_msub(my_int32_t a, my_int32_t b){
     my_int32_t res = 0;
     return res;
 }
 
-my_int32_t   fxd_msub(my_int32_t a, my_int32_t b){
-        my_int32_t res = 0;
-    return res;
-}
-
 my_int32_t   fxd_abs(my_int32_t a){
-    my_int32_t res;
-
     if (a == FRACTIONAL_MIN) {
-        res = FRACTIONAL_MAX;
+        return FRACTIONAL_MAX;
     }
-    else 
-    {
-       if (a < 0)
-            res = -a;
-       else
-            res = a;
+    else {
+        return (a < 0) ? -a: a;
     }
 
-    return res;
 }
 
 my_int32_t   fxd_neg(my_int32_t a){
-    my_int32_t res;
 
-    res = (a == FRACTIONAL_MIN) ? FRACTIONAL_MAX : -a;
-    return res;
+    return (a == FRACTIONAL_MIN) ? FRACTIONAL_MAX : -a;
 }
