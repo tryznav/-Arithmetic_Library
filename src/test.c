@@ -25,9 +25,21 @@ int64_t   fxd_NewRaphAlg_doub(){
     }
     printf("%lli\n",(x * Nsh)/INT16_MAX/INT16_MAX);
     return x;
+
+    // int64_t m = 
 }
 
-
+int sat(uint8_t a, uint8_t b){
+    int8_t re = INT8_MAX - b;
+    printf("re = %d\n", re);
+    if(a < re){
+        printf("sat YES\n");
+    }else
+    {
+        printf("sat NO = %d\n",a);
+    }
+    return 0;
+}
 
 int main(){
                                     //
@@ -52,7 +64,10 @@ int main(){
     // int32_t a = 0b01111111111111111111111111111111;
     // int32_t b = 0b11111111111111111111111111111111;
     int32_t a = 0b01000000000000000000000000000000;
-    int32_t b = 0b01000000000000000000000000000010;
+
+    uint64_t m = INT32_MAX ;
+    m *= INT32_MAX ;
+    printf("%lli  %x  %dn",m , (unsigned int)m, INT32_MAX) ;
 
     //int32_t res = fxd_add(a, b);
     // int32_t res = fxd_mul(a, b);
@@ -60,17 +75,24 @@ int main(){
     // printf("%9.31f\n ", fxd_to_flt(res));
     // flt_NewRaphAlg();
     // fxd_NewRaphAlg_doub();
-    double intr = 1.0  / 512;
-    double it = -1;//intr;
-    double tmp = 0;
-    flt_div(1.0f, 2.0f);
-    for (int i = 0; i < 512; i++){
-        tmp = pow(2, it);
-        printf("%d, // %f, %f\n", float_to_fixed(tmp), it, tmp);
+    // double intr = 1.0  / 512;
+    // double it = -1;//intr;
+    // double tmp = 0;
+    // int8_t n = INT8_MAX;
+    // int8_t k = -126;
+    // // k *= -1;
+    // printf("%d\n", k);  
+    // n -= k; 
+    // printf("%d\n", n );   
+    // // flt_div(1.0f, 2.0f);
+    // for (int i = 0; i < 512; i++){
+    //     tmp = pow(2, it);
+    //     // printf("%d, // %f, %f\n", float_to_fixed(tmp), it, tmp);
 
-        // tmp = log2(it);
-        // printf("%d, // %f, %f\n",float_to_fixed(tmp), it, tmp);
-        it = it + intr;
-    }
+
+    //     // tmp = log2(it);
+    //     // printf("%d, // %f, %f\n",float_to_fixed(tmp), it, tmp);
+    //     it = it + intr;
+    // }
     
 }

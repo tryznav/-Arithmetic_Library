@@ -27,26 +27,29 @@ void print_n(fxd_q31_t num){
     binaryPrint(tmp);
 }
 
+fxd_q63_t saturation(fxd_q63_t num){
+    if(num > INT32_MAX){
+        return INT32_MAX;
+    }
+    if(num < INT32_MIN){
+        return INT32_MIN;
+    }
+    return num;
+} 
+
 double fixed_to_double(int32_t input)
 {
     return ((double)input / (double)(1 << 31));
 }
 
 fxd_q31_t   fxd_add(int32_t a, int32_t b){
-    fxd_q31_t res;
+    fxd_q63_t res;
 
     res = a + b;
 
-    if (!((a ^ b) & FRACTIONAL_MIN))
-    {    
+    res = saturation(res);
 
-        if ((res ^ a) & FRACTIONAL_MIN)
-        {
-            res = (a < 0) ? FRACTIONAL_MIN + 1: FRACTIONAL_MAX;
-        }
-    }
-
-    return res;
+    return (fxd_q31_t)res;
 
 }
 
@@ -72,13 +75,7 @@ fxd_q63_t   fxd_sub63(fxd_q63_t a, fxd_q63_t b){
 
     res = a - b;
     
-    if (((a ^ b) & (-1ll<<63)))
-    {
-        if ((res ^ a) &  (-1ll<<63)) 
-        {
-            res = (a < 0) ? (-1ll<<63) + 1 : ((1ull<<63)-1);
-        }
-    }
+    res = saturation(res);
 
     return res;
 }
@@ -99,15 +96,32 @@ fxd_q31_t   fxd_sub(fxd_q31_t a, fxd_q31_t b){
     return res;
 }
 
+//think about it
+fxd_q63_t sat_m(fxd_q63_t num){
+    if(num > (INT32_MAX * INT32_MAX)){
+        return (INT32_MAX * INT32_MAX);
+    }
+    // if(num < (INT32_MIN * INT32_MIN)){
+    //     return (INT32_MIN * INT32_MIN);
+    // }
+    return num;
+}
+
+
+fxd_q31_t   get_higher(fxd_q31_t a){
+    a += (1u << (FRACTION_BITS - 1));
+    a = sat_m(a);
+    a >>= FRACTION_BITS;
+    return (fxd_q31_t)a;
+}
+
+
 fxd_q31_t   fxd_mul(fxd_q31_t a, fxd_q31_t b){
     fxd_q31_t res = 0;
     fxd_q63_t acum = a;
 
     acum *= b;
-    acum += (1u << (FRACTION_BITS - 1));
-    acum >>= FRACTION_BITS;
-    res = (fxd_q31_t)acum;
-
+    res = get_higher(acum);
     return res;
 }
 

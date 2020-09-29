@@ -47,7 +47,9 @@ my_float   flt_div(my_float N, my_float  D){
 }
 
 my_float   flt_pow2(my_float n){
-        n= -n'
+        
+        n = -n;
+        return n;
         //
 }
 
