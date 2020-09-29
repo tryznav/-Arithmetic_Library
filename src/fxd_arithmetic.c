@@ -21,7 +21,7 @@ void binaryPrint(uint32_t num){
                 printf("\n");
 }
 
-void print_n(my_int32_t num){
+void print_n(fxd_q31_t num){
     uint32_t tmp;
     memcpy(&tmp, &num, 4);
     binaryPrint(tmp);
@@ -32,8 +32,8 @@ double fixed_to_double(int32_t input)
     return ((double)input / (double)(1 << 31));
 }
 
-my_int32_t   fxd_add(int32_t a, int32_t b){
-    my_int32_t res;
+fxd_q31_t   fxd_add(int32_t a, int32_t b){
+    fxd_q31_t res;
 
     res = a + b;
 
@@ -50,8 +50,8 @@ my_int32_t   fxd_add(int32_t a, int32_t b){
 
 }
 
-my_int64_t   fxd_add63(int64_t a, int64_t b){
-    my_int64_t res;
+fxd_q63_t   fxd_add63(int64_t a, int64_t b){
+    fxd_q63_t res;
 
     res = a + b;
 
@@ -67,9 +67,8 @@ my_int64_t   fxd_add63(int64_t a, int64_t b){
 
 }
 
-
-my_int64_t   fxd_sub63(my_int64_t a, my_int64_t b){
-    my_int64_t res = 0;
+fxd_q63_t   fxd_sub63(fxd_q63_t a, fxd_q63_t b){
+    fxd_q63_t res = 0;
 
     res = a - b;
     
@@ -84,18 +83,7 @@ my_int64_t   fxd_sub63(my_int64_t a, my_int64_t b){
     return res;
 }
 
-
-
-
-float fxd_to_flt(my_int32_t val){
-    return ((float)val / (float)(1u << FRACTION_BITS));
-}
-
-double fxd_to_flt64(my_int64_t val){
-    return ((double)val / (double)(1u << FRACTION_BITS));
-}
-
-my_int32_t   fxd_sub(my_int32_t a, my_int32_t b){
+fxd_q31_t   fxd_sub(fxd_q31_t a, fxd_q31_t b){
     int32_t res = 0;
 
     res = a - b;
@@ -111,36 +99,35 @@ my_int32_t   fxd_sub(my_int32_t a, my_int32_t b){
     return res;
 }
 
-my_int32_t   fxd_mul(my_int32_t a, my_int32_t b){
-    my_int32_t res = 0;
-    my_int64_t acum = a;
+fxd_q31_t   fxd_mul(fxd_q31_t a, fxd_q31_t b){
+    fxd_q31_t res = 0;
+    fxd_q63_t acum = a;
 
     acum *= b;
     acum += (1u << (FRACTION_BITS - 1));
     acum >>= FRACTION_BITS;
-    res = (my_int32_t)acum;
+    res = (fxd_q31_t)acum;
 
     return res;
 }
 
-my_int64_t fxd_mac(my_int64_t a, my_int32_t b,  my_int32_t c){
-    my_int64_t acum = b;
+fxd_q63_t   fxd_mac(fxd_q63_t a, fxd_q31_t b,  fxd_q31_t c){
+    fxd_q63_t acum = b;
     acum *= c;
     acum <<= 1;
     acum = fxd_add63(acum, a); 
     return acum;
 }
 
-
-my_int64_t   fxd_msub(my_int64_t a, my_int32_t b,  my_int32_t c){
-    my_int64_t acum = b;
+fxd_q63_t   fxd_msub(fxd_q63_t a, fxd_q31_t b,  fxd_q31_t c){
+    fxd_q63_t acum = b;
     acum *= c;
     acum <<= 1;
     acum = fxd_sub63(a, acum); 
     return acum;
 }
 
-my_int32_t   fxd_abs(my_int32_t a){
+fxd_q31_t   fxd_abs(fxd_q31_t a){
     if (a == FRACTIONAL_MIN) {
         return FRACTIONAL_MAX;
     }
@@ -150,21 +137,21 @@ my_int32_t   fxd_abs(my_int32_t a){
 
 }
 
-my_int32_t   fxd_neg(my_int32_t a){
+fxd_q31_t   fxd_neg(fxd_q31_t a){
 
     return (a == FRACTIONAL_MIN) ? FRACTIONAL_MAX : -a;
 }
 
-my_int32_t   fxd_rshift(my_int32_t a , uint32_t n){
-    my_int32_t  res =  a >> n;
+fxd_q31_t   fxd_rshift(fxd_q31_t a , uint32_t n){
+    fxd_q31_t  res =  a >> n;
     assert(n <= 32);
 
     print_n(res);
     return res;
 }
 
-my_int32_t   fxd_lshift(my_int32_t a, uint32_t n){
-    my_int32_t  res ;
+fxd_q31_t   fxd_lshift(fxd_q31_t a, uint32_t n){
+    fxd_q31_t  res ;
 
     assert(n <= 32);
     res =  a << n;
@@ -175,10 +162,20 @@ my_int32_t   fxd_lshift(my_int32_t a, uint32_t n){
     return res;
 }
 
-my_int32_t float_to_fixed(double input)
+fxd_q31_t   flt_to_fix(my_float input)
 {
-    return (my_int32_t)(input * (FRACTIONAL_BASE));
+    return (fxd_q31_t)(input * (FRACTIONAL_BASE));
 }
+
+my_float    fxd_to_flt(fxd_q31_t val){
+    return ((float)val / (float)(1u << FRACTION_BITS));
+}
+
+double      fxd_to_flt64(fxd_q63_t val){
+    return ((double)val / (double)(1u << FRACTION_BITS));
+}
+
+
 // double   fxd_NewRaphAlg(){
 //     double  P = 32;
 //     double  N = 20;

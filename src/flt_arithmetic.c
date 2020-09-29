@@ -2,52 +2,56 @@
 
 #include "flt_arithmetic.h"
 
-float   flt_add(float a, float b){
-    return 0.0f;
+#define POW2EXP  0.075977616f
+#define T2      1.882352948
+#define T1      2.823529482
+
+my_float   flt_add(my_float a, my_float b){
+    return a + b;
 }
 
-float   flt_sub(float a, float b){
-        return 0.0f;
+my_float   flt_sub(my_float a, my_float b){
+        return a - b;
 }
 
-float   flt_mul(float a, float b){
-    return 0.0f;
+my_float   flt_mul(my_float a, my_float b){
+    return a * b;
 }
 
-float   flt_mac(float a, float b){
-        return 0.0f;
+my_float   flt_mac(my_float a, my_float b, my_float c){
+        return a + (b * c);
 }
 
-float   flt_msub(float a, float b){
-        return 0.0f;
+my_float   flt_msub(my_float a, my_float b, my_float c){
+        return a - (b * c);
 }
 
-
-float   flt_abs(float a, float b){
-        return 0.0f;
+my_float   flt_abs(my_float a){
+        return (a < 0) ? -a: a;
 }
 
-float   flt_neg(float a, float b){
-        return 0.0f;
+my_float   flt_neg(my_float a){
+        return -a;
 }
 
 my_float   flt_div(my_float N, my_float  D){
-    // double  P = 32;
-    // float  N = -15;
-    // float  D = 10;
+    my_float  Dsh = D * POW2EXP; ///powf(2, M_E + 1);
+    my_float  Nsh = N * POW2EXP; //powf(2, M_E + 1);
+
+    my_float x = T1 - T2 * Dsh;
     
-    my_float  Dsh = D; ///powf(2, M_E + 1);
-    my_float  Nsh = N; //powf(2, M_E + 1);
-
-    my_float x = 48.0f/17.0f - 32.0f/17.0f * Dsh;
-
     for(int i = 0; i < 3; i++){
-        x = x + x*(1 - Dsh * x);
+        x = x + x*(1.0f - Dsh * x);
     }
     return x * Nsh;
 }
 
-POW2_1_31[512] = {
+my_float   flt_pow2(my_float n){
+        n= -n'
+        //
+}
+
+POW2_FLT[512] = {
 1073741824, // -1.000000, 0.500000
 1075196443, // -0.998047, 0.500677
 1076653033, // -0.996094, 0.501356

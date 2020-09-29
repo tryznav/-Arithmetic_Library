@@ -63,7 +63,7 @@ int main(){
     double intr = 1.0  / 512;
     double it = -1;//intr;
     double tmp = 0;
-
+    flt_div(1.0f, 2.0f);
     for (int i = 0; i < 512; i++){
         tmp = pow(2, it);
         printf("%d, // %f, %f\n", float_to_fixed(tmp), it, tmp);
