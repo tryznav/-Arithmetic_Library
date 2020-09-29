@@ -28,4 +28,5 @@ my_float   flt_div(my_float N, my_float  D);
 
 my_float   flt_pow2(my_float);
 
+
 #endif /* colors.h */

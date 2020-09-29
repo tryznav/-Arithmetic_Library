@@ -61,13 +61,18 @@ int main(){
     // int32_t a = 0b11111111111111111111111111111111;
     // int32_t b = 0b11111111111111111111111111111111;
 
-    // int32_t a = 0b01111111111111111111111111111111;
+     int32_t a = 0b01111111111111111111111111111111;
     // int32_t b = 0b11111111111111111111111111111111;
-    int32_t a = 0b01000000000000000000000000000000;
+    int32_t d =  0b10000000000000000000000000000000;
 
-    uint64_t m = INT32_MAX ;
-    m *= INT32_MAX ;
-    printf("%lli  %x  %dn",m , (unsigned int)m, INT32_MAX) ;
+    // uint64_t m = INT32_MAX ;
+    // m *= INT32_MAX ;
+    // printf("%lli  %x  %dn", m, (unsigned int)m, INT32_MAX) ;
+
+    printf("%d  %lu %lu %5.20f\n", FRACTIONAL_BASE, a, flt_to_fix(-3.0f), fxd_to_dbl(d));
+    print_n(flt_to_fix(-3.0f));
+    float m = -0.99999999953433871269f;
+    printf("%5.20f\n",  m);
 
     //int32_t res = fxd_add(a, b);
     // int32_t res = fxd_mul(a, b);
@@ -75,9 +80,9 @@ int main(){
     // printf("%9.31f\n ", fxd_to_flt(res));
     // flt_NewRaphAlg();
     // fxd_NewRaphAlg_doub();
-    // double intr = 1.0  / 512;
-    // double it = -1;//intr;
-    // double tmp = 0;
+    double intr = 1.0  / 512;
+    double it = 1;//intr;
+    double tmp = 0;
     // int8_t n = INT8_MAX;
     // int8_t k = -126;
     // // k *= -1;
@@ -85,14 +90,33 @@ int main(){
     // n -= k; 
     // printf("%d\n", n );   
     // // flt_div(1.0f, 2.0f);
-    // for (int i = 0; i < 512; i++){
-    //     tmp = pow(2, it);
-    //     // printf("%d, // %f, %f\n", float_to_fixed(tmp), it, tmp);
-
-
-    //     // tmp = log2(it);
-    //     // printf("%d, // %f, %f\n",float_to_fixed(tmp), it, tmp);
-    //     it = it + intr;
-    // }
+    for (int i = 0; i < 512; i++){
+        tmp = log2(it);
+        printf("%d, // %f, %f  %d ", dbl_to_fix(tmp), it, tmp , fxd_log2(dbl_to_fix(it)));
+        // printf("%d %8.10f\n", POW2_FXD[i], fxd_to_dbl(POW2_FXD[i]));
+        it = it - intr;
+        //it = it + intr;
+    }
     
 }
+
+
+
+////// chek pow2
+// double intr = 1.0  / 512;
+// double it = 0 ;//intr;
+// double tmp = 0;
+// // int8_t n = INT8_MAX;
+// // int8_t k = -126;
+// // // k *= -1;
+// // printf("%d\n", k);  
+// // n -= k; 
+// // printf("%d\n", n );   
+// // // flt_div(1.0f, 2.0f);
+// for (int i = 0; i < 512; i++){
+//     tmp = pow(2, it);
+//     printf("%d, // %f, %f  %d ", dbl_to_fix(tmp), it, tmp , fxd_pow2(dbl_to_fix(it)));
+//     printf("%d %8.10f\n", POW2_FXD[i], fxd_to_dbl(POW2_FXD[i]));
+//     it = it - intr;
+//     //it = it + intr;
+// }

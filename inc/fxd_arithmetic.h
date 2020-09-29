@@ -39,13 +39,21 @@ fxd_q31_t   fxd_lshift(fxd_q31_t a , uint32_t n);
 
 fxd_q31_t   fxd_rshift(fxd_q31_t a , uint32_t n);
 
-float fxd_to_flt(fxd_q31_t val);
+double fxd_to_dbl(fxd_q31_t val);
 
-double fxd_to_flt64(fxd_q63_t val);
+fxd_q31_t   flt_to_fix(my_float input);
 
-fxd_q31_t float_to_fixed(double input);
+my_float    fxd_to_flt(fxd_q31_t val);
 
-const fxd_q31_t POW2_1_31[512];
+extern const fxd_q31_t POW2_FXD[512];
 
+fxd_q31_t   dbl_to_fix(double input);
+
+fxd_q31_t   fxd_pow2(fxd_q31_t n);
+
+fxd_q31_t   fxd_log2(fxd_q31_t n);
+
+
+void print_n(fxd_q31_t num);
 
 #endif /* colors.h */
