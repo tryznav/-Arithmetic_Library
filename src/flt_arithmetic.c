@@ -37,11 +37,16 @@ my_float   flt_neg(my_float a){
 my_float   flt_div(my_float N, my_float  D){
     my_float  Dsh = D * POW2EXP; ///powf(2, M_E + 1);
     my_float  Nsh = N * POW2EXP; //powf(2, M_E + 1);
-
+//     printf("Nsh_f = %f\n", Nsh);
+//     printf("Dsh_f = %f\n", Dsh);
     my_float x = T1 - T2 * Dsh;
-    
-    for(int i = 0; i < 3; i++){
+//     printf("x_f = %f\n", x);
+//      printf("mul1_f = %f i \n", Dsh * x );
+//      printf("minus = %f \n", (1.0f - Dsh * x));
+//      printf("mul2_f = %f i \n", x*(1.0f - Dsh * x) );
+    for(int i = 0; i < 5; i++){
         x = x + x*(1.0f - Dsh * x);
+        // printf(" x =%f \n", x);
     }
     return x * Nsh;
 }

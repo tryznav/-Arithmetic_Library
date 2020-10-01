@@ -17,9 +17,11 @@
 typedef int32_t fxd_q31_t;
 typedef int64_t fxd_q63_t;
 
+typedef int32_t fxd_q4_27_t;
 
 extern const fxd_q31_t POW2_FXD[512];
 extern const fxd_q31_t LOG2_FXD[512];
+extern const fxd_q4_27_t LOG2_FXD_Q27[512];
 
 #define FRACTIONAL_BASE     (1u<<FRACTION_BITS)
 
@@ -30,6 +32,8 @@ extern const fxd_q31_t LOG2_FXD[512];
 #define HALF_Q31_PL 0x40000000
 
 #define INTERP_FACTOR_MASK_LOG ((1 << 21) - 1)
+
+fxd_q63_t saturation(fxd_q63_t num);
 
 fxd_q31_t  fxd_add(fxd_q31_t a, fxd_q31_t b);
 
@@ -49,6 +53,7 @@ fxd_q31_t   fxd_lshift(fxd_q31_t a , uint32_t n);
 
 fxd_q31_t   fxd_rshift(fxd_q31_t a , uint32_t n);
 
+fxd_q63_t   fxd_lshift63(fxd_q63_t a, uint32_t n);
 
 fxd_q31_t   flt_to_fix(my_float input);
 
@@ -75,6 +80,10 @@ void print_n(fxd_q31_t num);
 fxd_q31_t   fxd_pow2(fxd_q31_t n);
 
 fxd_q31_t   fxd_log2(fxd_q31_t n);
+
+fxd_q4_27_t   fxd_log2_q27(fxd_q31_t n);
+
+fxd_q31_t   fxd_pow2_q27(fxd_q4_27_t  n);
 
 fxd_q31_t   fxd_pow(fxd_q31_t a, fxd_q31_t b);
 #endif /* colors.h */
