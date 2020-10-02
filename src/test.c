@@ -26,7 +26,6 @@ static int32_t test_log2_q4_27();
 static int32_t test_pow2_q4_27();
 
 int main(){
-                                    //
     // int32_t a = 0b00000000000000001000010000000000;
     // int32_t b = 0b00000000000000001000100000000000;
 
@@ -50,7 +49,7 @@ int main(){
     int32_t d =  0b10000000000000000000000000000000;
 
     // test_log2_q4_27();
-// test_pow2_q4_27();
+    // test_pow2_q4_27();
     // test_pow();
     test_div();
 }
@@ -97,17 +96,6 @@ static int32_t test_pow(){
 
     return 0;
 }
-
-
-
-// double fxd4_27_to_dbl(int32_t val){
-//     return ((double)val / (double)(1u << 26));
-// }
-
-// fxd_q31_t   dbl_to_fxd4_27(double input)
-// {
-//     return (fxd_q31_t)(input * (1u << 26));
-// }
 
 static int32_t test_log2_q4_27(){
     int32_t fxd_p = 0;
