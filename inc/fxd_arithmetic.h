@@ -29,8 +29,7 @@ extern const fxd_q4_27_t POW2_FXD_Q26[513];
 #define FRACTIONAL_MAX      ((1ul<<FRACTION_BITS)-1)
 #define FRACTIONAL_MIN      (-1<<FRACTION_BITS)
 
-
-#define HALF_Q31_PL 0x40000000
+#define HALF_Q31_PL         0x40000000
 
 #define INTERP_FACTOR_MASK_LOG ((1 << 21) - 1)
 
@@ -60,8 +59,6 @@ fxd_q31_t   flt_to_fix(my_float input);
 
 my_float    fxd_to_flt(fxd_q31_t val);
 
-
-
 fxd_q31_t   dbl_to_fxd(double input);
 
 
@@ -78,7 +75,6 @@ fxd_q31_t   dbl_to_fxd4_27(double input);
 //print 
 
 void print_n(fxd_q31_t num);
-
 
 //task 5
 
