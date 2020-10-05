@@ -1,6 +1,6 @@
 #cmake build dir
-./build/tmp
-./tmp
+build/tmp
+tmp
 
 # Prerequisites
 *.d
