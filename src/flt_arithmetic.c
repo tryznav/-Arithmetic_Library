@@ -35,8 +35,9 @@ my_float   flt_neg(my_float a){
 }
 
 my_float   flt_div(my_float N, my_float  D){
-    my_float  Dsh = D * POW2EXP; ///powf(2, M_E + 1);
-    my_float  Nsh = N * POW2EXP; //powf(2, M_E + 1);
+
+    my_float  Dsh = flt_abs(D) * POW2EXP; ///powf(2, M_E + 1);
+    my_float  Nsh = flt_abs(N) * POW2EXP; //powf(2, M_E + 1);
 
     my_float x = T1 - T2 * Dsh;
     for(int i = 0; i < 5; i++){

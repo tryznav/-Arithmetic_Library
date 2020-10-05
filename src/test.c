@@ -22,8 +22,8 @@ static int32_t test_div();
 static int32_t test_log2();
 static int32_t test_pow2();
 static int32_t test_pow();
-static int32_t test_log2_q4_27();
-static int32_t test_pow2_q4_27();
+static int32_t test_log2_h();
+static int32_t test_pow2_h();
 
 int main(){
     // int32_t a = 0b00000000000000001000010000000000;
@@ -63,7 +63,7 @@ static int32_t test_div(){
         //     printf("im hehre\n");
         //     continue;
         // }
-        res_q31 = fxd_div(-HALF_Q31_PL, dbl_to_fxd(i));
+        res_q31 = fxd_div(HALF_Q31_PL,  dbl_to_fxd(i));
         flt_div(0.5f, (float)i);
         // break;
         printf("0.5/%f  %5.10f  %5.10f myres %5.10f\n", i, -0.5/i, flt_div(-0.5f, (float)i), fxd_to_dbl(res_q31) );
@@ -97,38 +97,38 @@ static int32_t test_pow(){
     return 0;
 }
 
-static int32_t test_log2_q4_27(){
+static int32_t test_log2(){
     int32_t fxd_p = 0;
     double tmp = 0;
     int32_t tmp_log = 0;
     
     for (int32_t i = 0; i <= 511; i++){
         fxd_p = (i<<22) + 1;
-        tmp_log = fxd_log2_q27(fxd_p);
+        tmp_log = fxd_log2(fxd_p);
         tmp = log2(fxd_to_dbl(fxd_p));
-        printf("%d,// log2(%5.10f) = %5.10f my  %5.10f\n",  dbl_to_fxd4_27(tmp), fxd_to_dbl(fxd_p),  log2(fxd_to_dbl(fxd_p)),   fxd4_27_to_dbl(tmp_log));
-       // printf("%d,// log2(%5.10f) = %5.10f  , %d %5.10f \n", dbl_to_fxd(tmp), fxd_to_dbl(fxd_p), tmp , i, fxd_to_dbl(fxd_log2(fxd_p)));  /*, fxd_log2(dbl_to_fix(it))*/
+        printf("%d,// log2(%5.10f) = %5.10f my  %5.10f\n",  dbl_to_fxd5_26(tmp), fxd_to_dbl(fxd_p),  log2(fxd_to_dbl(fxd_p)),   fxd5_26_to_dbl(tmp_log));
     }
     printf("\n+++++++++++++++++++++++MAX+++++++++++++++++++\n");
     fxd_p = INT32_MAX;
-    tmp_log = fxd_log2_q27(fxd_p);
+    tmp_log = fxd_log2(fxd_p);
     tmp = log2(fxd_to_dbl(fxd_p));
-    printf("%d,// log2(%5.10f) = %5.10f my  %5.10f\n",  dbl_to_fxd4_27(tmp), fxd_to_dbl(fxd_p),  log2(fxd_to_dbl(fxd_p)),   fxd4_27_to_dbl(tmp_log));
+    printf("%d,// log2(%5.10f) = %5.10f my  %5.10f\n",  dbl_to_fxd5_26(tmp), fxd_to_dbl(fxd_p),  log2(fxd_to_dbl(fxd_p)),   fxd5_26_to_dbl(tmp_log));
+
     printf("\n+++++++++++++++++++++++check interp+++++++++++++++++++\n");
     fxd_p = (1<<22) - 1;
-    tmp_log = fxd_log2_q27(fxd_p);
+    tmp_log = fxd_log2(fxd_p);
     tmp = log2(fxd_to_dbl(fxd_p));
-    printf("%d,// log2(%5.10f) = %5.10f my  %5.10f\n",  dbl_to_fxd4_27(tmp), fxd_to_dbl(fxd_p),  log2(fxd_to_dbl(fxd_p)),   fxd4_27_to_dbl(tmp_log));
+    printf("%d,// log2(%5.10f) = %5.10f my  %5.10f\n",  dbl_to_fxd5_26(tmp), fxd_to_dbl(fxd_p),  log2(fxd_to_dbl(fxd_p)),   fxd5_26_to_dbl(tmp_log));
     for(int i = 1; i  <= (1<<22); i <<= 1){
         fxd_p = (1<<22) + i - 1;
-        tmp_log = fxd_log2_q27(fxd_p);
+        tmp_log = fxd_log2(fxd_p);
         tmp = log2(fxd_to_dbl(fxd_p));
-        printf("%d,// log2(%5.10f) = %5.10f my  %5.10f\n",  dbl_to_fxd4_27(tmp), fxd_to_dbl(fxd_p),  log2(fxd_to_dbl(fxd_p)),   fxd4_27_to_dbl(tmp_log));
+        printf("%d,// log2(%5.10f) = %5.10f my  %5.10f\n",  dbl_to_fxd5_26(tmp), fxd_to_dbl(fxd_p),  log2(fxd_to_dbl(fxd_p)),   fxd5_26_to_dbl(tmp_log));
     }
     return 0;
 }
 
-static int32_t test_pow2_q4_27(){
+static int32_t test_pow2(){
  int32_t fxd_p = 0;
     double tmp = 0;
     int32_t tmp_pow  = 0; 
@@ -137,16 +137,16 @@ static int32_t test_pow2_q4_27(){
 
         fxd_p = (-i << 22);
         // fxd_p  = -1;
-        tmp = pow(2.0, fxd4_27_to_dbl(fxd_p));
+        tmp = pow(2.0, fxd5_26_to_dbl(fxd_p));
 
-        printf("%d,// pow2(%5.10f) = %5.10f  , %d %5.10f\n",  dbl_to_fxd(tmp), fxd4_27_to_dbl(fxd_p), tmp , i, fxd_to_dbl(fxd_pow2_q27(fxd_p)));  /*, fxd_log2(dbl_to_fix(it))*/
+        printf("%d,// pow2(%5.10f) = %5.10f  , %d %5.10f\n",  dbl_to_fxd(tmp), fxd5_26_to_dbl(fxd_p), tmp , i, fxd_to_dbl(fxd_pow2(fxd_p)));  /*, fxd_log2(dbl_to_fix(it))*/
     }
     for(int i = -1; i  >= (-1<<22); i <<= 1){
         fxd_p = i  + (-1<<22);
-        tmp_pow = fxd_pow2_q27(fxd_p);
-        tmp = pow(2.0, fxd4_27_to_dbl(fxd_p));
+        tmp_pow = fxd_pow2(fxd_p);
+        tmp = pow(2.0, fxd5_26_to_dbl(fxd_p));
 
-        printf("%d,// pow2(%5.10f) = %5.10f  , %d %5.10f\n",  dbl_to_fxd(tmp), fxd4_27_to_dbl(fxd_p), tmp , i, fxd_to_dbl(fxd_pow2_q27(fxd_p)));  /*, fxd_log2(dbl_to_fix(it))*/
+        printf("%d,// pow2(%5.10f) = %5.10f  , %d %5.10f\n",  dbl_to_fxd(tmp), fxd5_26_to_dbl(fxd_p), tmp , i, fxd_to_dbl(fxd_pow2(fxd_p)));  /*, fxd_log2(dbl_to_fix(it))*/
     }
 
     double delta = 0;
@@ -157,16 +157,16 @@ static int32_t test_pow2_q4_27(){
     double average = 0;
 
     for (int32_t i = -1; i > (INT32_MIN/4); i--){
-        double tmp = fabs(pow(2.0, fxd4_27_to_dbl(i))) -  fabs(fxd_to_dbl(fxd_pow2_q27(i)));
+        double tmp = fabs(pow(2.0, fxd5_26_to_dbl(i))) -  fabs(fxd_to_dbl(fxd_pow2(i)));
         if(tmp > delta){
             delta = tmp;
-            real_val = (pow(2.0, fxd4_27_to_dbl(i)));
+            real_val = (pow(2.0, fxd5_26_to_dbl(i)));
         }
         average += tmp ;
-        tmp = fabs(pow(2.0, fxd4_27_to_dbl(i))) -  fabs(fxd_to_dbl(fxd_pow2_q27_no_interp(i)));
+        tmp = fabs(pow(2.0, fxd5_26_to_dbl(i))) -  fabs(fxd_to_dbl(fxd_pow2_no_interp(i)));
         if(tmp > delta_no_interp){
             delta_no_interp = tmp;
-            real_val_no_interp =(pow(2.0, fxd4_27_to_dbl(i)));
+            real_val_no_interp =(pow(2.0, fxd5_26_to_dbl(i)));
         }
         average_no_interp += tmp ;
     }
@@ -177,7 +177,7 @@ static int32_t test_pow2_q4_27(){
     return 0;
 }
 
-static int32_t test_log2(){
+static int32_t test_log2_h(){
     int32_t fxd_p = 0;
     double tmp = 0;
     int32_t tmp_log = 0;
@@ -229,7 +229,7 @@ static int32_t test_log2(){
     return 0;
 }
 
-static int32_t test_pow2(){
+static int32_t test_pow2_h(){
     int32_t fxd_p = 0;
     double tmp = 0;
     int32_t tmp_pow  = 0; 
