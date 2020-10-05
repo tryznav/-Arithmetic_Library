@@ -3,18 +3,18 @@
 #include "fxd_arithmetic.h"
 
 #include <math.h>
-#define BITS_TYPE32     31
+#define BITS_TYPE32         31
 
-#define BASE_BITS       26
-#define CONV1           (FRACTION_BITS - BASE_BITS)
-#define CONV            (BASE_BITS + BASE_BITS - FRACTION_BITS)
-#define ONE             ((1ll<<BASE_BITS))
-#define coef            ((1ll<<BASE_BITS))
-#define Xn              ((48ll<<BASE_BITS)/17)
-#define Xm              ((32ll<<BASE_BITS)/17)
+#define BASE_BITS           26
+#define CONV1               (FRACTION_BITS - BASE_BITS)
+#define CONV                (BASE_BITS + BASE_BITS - FRACTION_BITS)
+#define ONE                 ((1ll<<BASE_BITS))
+#define coef                ((1ll<<BASE_BITS))
+#define Xn                  ((48ll<<BASE_BITS)/17)
+#define Xm                  ((32ll<<BASE_BITS)/17)
 
-#define SIGN_Q31        (-1<<31)
-#define SIGN_Q63        (-1ll<<63)
+#define SIGN_Q31            (-1<<31)
+#define SIGN_Q63            (-1ll<<63)
 
 #define INTERP_FACTOR_MASK  ((1 << 22) - 1)
 
@@ -54,20 +54,18 @@ fxd_q31_t   fxd_sub(fxd_q31_t a, fxd_q31_t b){
 
 static fxd_q31_t   get_higher(fxd_q63_t a){
     a += (1ull << (FRACTION_BITS - 1));
-    if(a > ((1ull << 62) - 1)){
-        a = ((1ull << 62) - 1);
+    if(a == (1ull << 62) + (1ull << (FRACTION_BITS - 1))){
+        a = (1ull << 62) - 1;
     }
     a >>= FRACTION_BITS;
     return (fxd_q31_t)a;
 }
 
 fxd_q31_t   fxd_mul(fxd_q31_t a, fxd_q31_t b){
-    fxd_q31_t res = 0;
     fxd_q63_t acum = a;
 
     acum *= b;
-    res = get_higher(acum);
-    return res;
+    return get_higher(acum);
 }
 
 /***********************************************/
@@ -75,8 +73,11 @@ fxd_q31_t   fxd_mul(fxd_q31_t a, fxd_q31_t b){
 fxd_q63_t   fxd_mac(fxd_q63_t a, fxd_q31_t b,  fxd_q31_t c){
     fxd_q63_t acum = b;
     acum *= c;
+    if(acum == (1ull << 62)){
+        acum = (1ull << 62) - 1;
+    }
     acum <<= 1;
-    acum = fxd63_add(acum, a); 
+    acum = fxd63_add(acum, a);
     return acum;
 }
 
@@ -85,6 +86,9 @@ fxd_q63_t   fxd_mac(fxd_q63_t a, fxd_q31_t b,  fxd_q31_t c){
 fxd_q63_t   fxd_msub(fxd_q63_t a, fxd_q31_t b,  fxd_q31_t c){
     fxd_q63_t acum = b;
     acum *= c;
+    if(a == (1ull << 62)){
+        a = (1ull << 62) - 1;
+    }
     acum <<= 1;
     acum = fxd63_sub(a, acum); 
     return acum;
@@ -134,6 +138,43 @@ fxd_q31_t   fxd_lshift(fxd_q31_t a, uint32_t n){
 
 /***********************************************/
 
+fxd_q31_t   flt_to_fxd(my_float inp)
+{
+    if(inp >= 1.0){
+        return FRACTIONAL_MAX;
+    }
+    if(inp <= -1.0){
+        return FRACTIONAL_MIN;
+    }
+    return (fxd_q31_t)(inp * (FRACTIONAL_BASE));
+}
+
+/***********************************************/
+
+my_float    fxd_to_flt(fxd_q31_t val){
+    return ((float)val / (float)(1u << FRACTION_BITS));
+}
+
+/***********************************************/
+
+fxd_q31_t   dbl_to_fxd(double a)
+{
+    if(a >= 1.0){
+        return FRACTIONAL_MAX;
+    }
+    if(a <= -1.0){
+        return FRACTIONAL_MIN;
+    }
+    return (fxd_q31_t)(a * (FRACTIONAL_BASE));
+}
+
+/***********************************************/
+
+double      fxd_to_dbl(fxd_q31_t a){
+    return ((double)a / (double)(1u << FRACTION_BITS));
+}
+/***********************************************/
+
 static int64_t div_mul(int64_t a, int64_t b){
     return ((a * b) >> BASE_BITS);
 }
@@ -162,9 +203,18 @@ fxd_q31_t   fxd_pow2(fxd_q5_26_t  n){
     assert(n < 0); 
 
     int32_t index = -(n>>22);
+    // int32_t index2 = 512 + (n>>22);
     int32_t interp_factor = (-n & INTERP_FACTOR_MASK_LOG) ;
     int64_t tmp = 0;
+    // int64_t tmp2 = 0;
 
+    
+    // print_n(interp_factor);
+    // printf("%d\n", index);
+    // printf("(n>>22) %d %d\n", index2, POW_INVERT[index2]);
+    // tmp2 =  POW_INVERT[index2 + 1] + POW_INVERT[index2];
+    // tmp2 = (tmp2 * interp_factor) >> 22;
+    // tmp2 =  POW_INVERT[index] +  tmp2;
     if(interp_factor){
         tmp = POW2_FXD_Q26[index - 1] - POW2_FXD_Q26[index];
         tmp = (tmp * interp_factor) >> 22;
@@ -172,6 +222,7 @@ fxd_q31_t   fxd_pow2(fxd_q5_26_t  n){
     } else {
         tmp =  POW2_FXD_Q26[index];
     }
+    // printf( "%lli %lli \n",tmp2, tmp );
     return (fxd_q31_t )tmp;
 }
 
@@ -206,6 +257,7 @@ fxd_q31_t   fxd_pow(fxd_q31_t a, fxd_q31_t b){
 
 /***********************************************/
 
+//________________Additional_func_________________
 
 /***********************************************/
 
@@ -259,36 +311,6 @@ fxd_q63_t   fxd63_lshift(fxd_q63_t a, uint32_t n){
 
 /***********************************************/
 
-fxd_q31_t   flt_to_fxd(my_float input)
-{
-    if(input >= 1.0){
-        return FRACTIONAL_BASE - 1;
-    }
-    if(input <= -1.0){
-        return FRACTIONAL_BASE;
-    }
-    return (fxd_q31_t)(input * (FRACTIONAL_BASE));
-}
-
-/***********************************************/
-
-my_float    fxd_to_flt(fxd_q31_t val){
-    return ((float)val / (float)(1u << FRACTION_BITS));
-}
-
-/***********************************************/
-
-fxd_q31_t   dbl_to_fxd(double a)
-{
-    if(a >= 1.0){
-        return FRACTIONAL_MAX;
-    }
-    if(a <= -1.0){
-        return FRACTIONAL_MIN;
-    }
-    return (fxd_q31_t)(a * (FRACTIONAL_BASE));
-}
-
 fxd_q31_t   fxd_pow2_h(fxd_q31_t n){
 
     assert(n <= -(1<<22));
@@ -303,6 +325,7 @@ fxd_q31_t   fxd_pow2_h(fxd_q31_t n){
     return (fxd_q31_t)tmp;
 }
 
+/***********************************************/
 
 fxd_q31_t   fxd_log_h(fxd_q31_t n){
 
@@ -319,7 +342,7 @@ fxd_q31_t   fxd_log_h(fxd_q31_t n){
     return (fxd_q31_t)tmp;
 }
 
-//________________Additional_func_________________
+/***********************************************/
 
 fxd_q5_26_t   fxd_log2_no_interp(fxd_q31_t n){
 
@@ -336,7 +359,7 @@ fxd_q5_26_t   fxd_log2_no_interp(fxd_q31_t n){
 
 /***********************************************/
 
-fxd_q31_t   fxd_pow2_q27_interp(fxd_q5_26_t  n){
+fxd_q31_t   fxd_pow2_no_interp(fxd_q5_26_t  n){
     assert(n < 0); 
     int32_t index = -(n>>22);
     int32_t interp_factor = (-n & INTERP_FACTOR_MASK_LOG) ;
@@ -372,6 +395,28 @@ void print_n(fxd_q31_t num){
 
 /***********************************************/
 
+static void binaryPrint63(uint64_t num){
+    uint64_t b = (1ull<<63);
+                // printf("\n");
+    for(int i = 0; i <= 63; i++){
+        if ((num & b) == b){
+            printf("1");
+        }else{
+            printf("0");
+        }
+        b >>= 1;
+    }
+    printf("\n");
+}
+
+void print_n63(int64_t num){
+    uint64_t tmp ;
+    memcpy(&tmp, &num, 8);
+    binaryPrint63((uint64_t)num);
+}
+
+/***********************************************/
+
 double fxd_div_to_dbl(int64_t val){
 
     return ((double)val / (double)(1u << BASE_BITS));
@@ -394,12 +439,6 @@ double fxd5_26_to_dbl(int32_t val){
 fxd_q31_t   dbl_to_fxd4_27(double input)
 {
     return (fxd_q31_t)(input * (1u << 26));
-}
-
-/***********************************************/
-
-double      fxd_to_dbl(fxd_q31_t val){
-    return ((double)val / (double)(1u << FRACTION_BITS));
 }
 
 /***********************************************/

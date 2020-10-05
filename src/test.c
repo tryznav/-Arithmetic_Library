@@ -48,13 +48,14 @@ int main(){
 
     int32_t d =  0b10000000000000000000000000000000;
 
-    // test_log2_q4_27();
-    // test_pow2_q4_27();
-    // test_pow();
-    test_div();
+    // int64_t i = fxd_mac(0, INT32_MIN, INT32_MIN);
+    // printf("int %lli %d\n", i, INT32_MAX);
+    test_pow2();
+    fxd_pow2(-1);
+    // for(int i = 512; i >= 0; i--){
+    //     printf( "%d, \n", POW2_FXD_Q26[i]);
+    // }
 }
-
-
 static int32_t test_div(){
     int32_t res_q31 = 0;
     double i = -1.0;
@@ -141,39 +142,39 @@ static int32_t test_pow2(){
 
         printf("%d,// pow2(%5.10f) = %5.10f  , %d %5.10f\n",  dbl_to_fxd(tmp), fxd5_26_to_dbl(fxd_p), tmp , i, fxd_to_dbl(fxd_pow2(fxd_p)));  /*, fxd_log2(dbl_to_fix(it))*/
     }
-    for(int i = -1; i  >= (-1<<22); i <<= 1){
-        fxd_p = i  + (-1<<22);
-        tmp_pow = fxd_pow2(fxd_p);
-        tmp = pow(2.0, fxd5_26_to_dbl(fxd_p));
+    // for(int i = -1; i  >= (-1<<22); i <<= 1){
+    //     fxd_p = i  + (-1<<22);
+    //     tmp_pow = fxd_pow2(fxd_p);
+    //     tmp = pow(2.0, fxd5_26_to_dbl(fxd_p));
 
-        printf("%d,// pow2(%5.10f) = %5.10f  , %d %5.10f\n",  dbl_to_fxd(tmp), fxd5_26_to_dbl(fxd_p), tmp , i, fxd_to_dbl(fxd_pow2(fxd_p)));  /*, fxd_log2(dbl_to_fix(it))*/
-    }
+    //     printf("%d,// pow2(%5.10f) = %5.10f  , %d %5.10f\n",  dbl_to_fxd(tmp), fxd5_26_to_dbl(fxd_p), tmp , i, fxd_to_dbl(fxd_pow2(fxd_p)));  /*, fxd_log2(dbl_to_fix(it))*/
+    // }
 
-    double delta = 0;
-    double delta_no_interp = 0;
-    double real_val = 0;
-    double real_val_no_interp = 0;
-    double average_no_interp = 0;
-    double average = 0;
+    // double delta = 0;
+    // double delta_no_interp = 0;
+    // double real_val = 0;
+    // double real_val_no_interp = 0;
+    // double average_no_interp = 0;
+    // double average = 0;
 
-    for (int32_t i = -1; i > (INT32_MIN/4); i--){
-        double tmp = fabs(pow(2.0, fxd5_26_to_dbl(i))) -  fabs(fxd_to_dbl(fxd_pow2(i)));
-        if(tmp > delta){
-            delta = tmp;
-            real_val = (pow(2.0, fxd5_26_to_dbl(i)));
-        }
-        average += tmp ;
-        tmp = fabs(pow(2.0, fxd5_26_to_dbl(i))) -  fabs(fxd_to_dbl(fxd_pow2_no_interp(i)));
-        if(tmp > delta_no_interp){
-            delta_no_interp = tmp;
-            real_val_no_interp =(pow(2.0, fxd5_26_to_dbl(i)));
-        }
-        average_no_interp += tmp ;
-    }
-    average_no_interp = average_no_interp / (-INT32_MIN/4);
-    average = average / (-INT32_MIN/4);
-    printf("\nModule  DELTA interp %5.10f %5.10f average = %f\n",delta, (delta/real_val*100),  average);
-    printf("\nModule  DELTA  no interp %5.10f %5.10f average = %f\n",delta_no_interp, (delta_no_interp/real_val_no_interp*100), average_no_interp);
+    // for (int32_t i = -1; i > (INT32_MIN/4); i--){
+    //     double tmp = fabs(pow(2.0, fxd5_26_to_dbl(i))) -  fabs(fxd_to_dbl(fxd_pow2(i)));
+    //     if(tmp > delta){
+    //         delta = tmp;
+    //         real_val = (pow(2.0, fxd5_26_to_dbl(i)));
+    //     }
+    //     average += tmp ;
+    //     tmp = fabs(pow(2.0, fxd5_26_to_dbl(i))) -  fabs(fxd_to_dbl(fxd_pow2_no_interp(i)));
+    //     if(tmp > delta_no_interp){
+    //         delta_no_interp = tmp;
+    //         real_val_no_interp =(pow(2.0, fxd5_26_to_dbl(i)));
+    //     }
+    //     average_no_interp += tmp ;
+    // }
+    // average_no_interp = average_no_interp / (-INT32_MIN/4);
+    // average = average / (-INT32_MIN/4);
+    // printf("\nModule  DELTA interp %5.10f %5.10f average = %f\n",delta, (delta/real_val*100),  average);
+    // printf("\nModule  DELTA  no interp %5.10f %5.10f average = %f\n",delta_no_interp, (delta_no_interp/real_val_no_interp*100), average_no_interp);
     return 0;
 }
 

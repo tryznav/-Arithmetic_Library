@@ -23,6 +23,7 @@ extern const fxd_q31_t POW2_FXD[512];
 extern const fxd_q31_t LOG2_FXD[512];
 extern const fxd_q5_26_t LOG2_FXD_Q27[513];
 extern const fxd_q5_26_t POW2_FXD_Q26[513];
+extern const int32_t POW_INVERT[513];
 
 #define FRACTIONAL_BASE         (1u<<FRACTION_BITS)
 
@@ -139,7 +140,7 @@ fxd_q31_t   fxd_rshift(fxd_q31_t a , uint32_t n);
  * 
  * @return          fixed value in format Q31(32bit)
  ******************************************************************************/
-fxd_q31_t   flt_to_fix(my_float input);
+fxd_q31_t   flt_to_fxd(my_float input);
 
 /*******************************************************************************
  *  Convert fixed point value Q31 to float point value
@@ -206,9 +207,7 @@ fxd_q31_t   fxd_pow2(fxd_q5_26_t  n);
  ******************************************************************************/
 fxd_q31_t   fxd_pow(fxd_q31_t a, fxd_q31_t b);
 
-
 //________________Additional_func_________________
-
 
 /*******************************************************************************
  *  Addition(+) with saturation for format Q63(64bit)
@@ -221,7 +220,7 @@ fxd_q31_t   fxd_pow(fxd_q31_t a, fxd_q31_t b);
 fxd_q63_t   fxd63_add(int64_t a, int64_t b);
 
 /*******************************************************************************
- *  Subtraction(-) with saturation for format Q63(64bit)s
+ *  Subtraction(-) with saturation for format Q63(64bit)
  * 
  * @param     a     minuend in format Q63(64bit)
  * @param     b     subtrahend in format Q63(64bit)
@@ -239,13 +238,15 @@ fxd_q31_t   dbl_to_fxd5_26(double input);
 
 void print_n(fxd_q31_t num);
 
-fxd_q5_26_t   fxd_log2_no_interp(fxd_q31_t n);
+void print_n63(int64_t num);
 
-fxd_q31_t   fxd_pow2_no_interp(fxd_q5_26_t  n);
+fxd_q5_26_t     fxd_log2_no_interp(fxd_q31_t n);
+
+fxd_q31_t       fxd_pow2_no_interp(fxd_q5_26_t  n);
 
 
-fxd_q31_t   fxd_pow2_h(fxd_q31_t n);
+fxd_q31_t       fxd_pow2_h(fxd_q31_t n);
 
-fxd_q31_t   fxd_log2_h(fxd_q31_t n);
+fxd_q31_t       fxd_log2_h(fxd_q31_t n);
 
 #endif /* colors.h */
