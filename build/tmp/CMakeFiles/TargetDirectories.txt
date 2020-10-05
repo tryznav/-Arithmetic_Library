@@ -1,6 +1,0 @@
-D:/-Arithmetic_Library/build/tmp/CMakeFiles/ALL_BUILD.dir
-D:/-Arithmetic_Library/build/tmp/CMakeFiles/ZERO_CHECK.dir
-D:/-Arithmetic_Library/build/tmp/ArithmeticLib/CMakeFiles/ArithmeticLib.dir
-D:/-Arithmetic_Library/build/tmp/ArithmeticLib/CMakeFiles/ALL_BUILD.dir
-D:/-Arithmetic_Library/build/tmp/test/CMakeFiles/TestApp.dir
-D:/-Arithmetic_Library/build/tmp/test/CMakeFiles/ALL_BUILD.dir
