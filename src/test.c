@@ -50,9 +50,9 @@ int main(){
 
     // int64_t i = fxd_mac(0, INT32_MIN, INT32_MIN);
     // printf("int %lli %d\n", i, INT32_MAX);
-    // test_pow2();
+    test_pow2();
     // fxd_pow2(-1);
-    test_log2();
+    // test_log2();
     // for(int i = 512; i >= 0; i--){
     //     printf( "%d, \n", POW2_FXD_Q26[i]);
     // }
@@ -144,7 +144,7 @@ static int32_t test_log2(){
     double average_no_interp = 0;
     double average = 0;
 
-    for (int32_t i = 1; i < (INT32_MAX/16); i++){
+    for (int32_t i = 1; i < (INT32_MAX/4); i++){
         double tmp =  abs_diff(log2(fxd_to_dbl(i)), fxd5_26_to_dbl(fxd_log2(i)));
         if(tmp > delta){
             delta = tmp;
@@ -162,7 +162,7 @@ static int32_t test_log2(){
     }
     printf(" delta_no_interp %f\n",  delta_no_interp);
     average_no_interp = average_no_interp / (INT32_MAX/16);
-    average = average / (INT32_MAX/16);
+    average = average / (INT32_MAX/4);
     printf("\nModule  DELTA interp %5.10f %5.10f average = %f\n",delta, (delta/real_val*100),  average);
     printf("\nModule  DELTA  no interp %5.10f %5.10f average = %f\n",delta_no_interp, (delta_no_interp/real_val_no_interp*100), average_no_interp);
     return 0;
@@ -173,7 +173,7 @@ static int32_t test_pow2(){
     double tmp = 0;
     int32_t tmp_pow  = 0; 
     printf("\n+++++++++++++++++++++++CHECK POW+++++++++++++++++++\n");
-    for (int32_t i = 1; i < 513; i++){
+    for (int32_t i = 1; i < 10; i++){
 
         fxd_p = (-i << 22);
         // fxd_p  = -1;
@@ -181,13 +181,21 @@ static int32_t test_pow2(){
 
         printf("%d,// pow2(%5.10f) = %5.10f  , %d %5.10f\n",  dbl_to_fxd(tmp), fxd5_26_to_dbl(fxd_p), tmp , i, fxd_to_dbl(fxd_pow2(fxd_p)));  /*, fxd_log2(dbl_to_fix(it))*/
     }
-    // for(int i = -1; i  >= (-1<<22); i <<= 1){
-    //     fxd_p = i  + (-1<<22);
-    //     tmp_pow = fxd_pow2(fxd_p);
-    //     tmp = pow(2.0, fxd5_26_to_dbl(fxd_p));
+     printf("\n+++++++++++++++++++++++CHECK INTERP+++++++++++++++++++\n");
+        fxd_p = (-1<<22);
+        tmp_pow = fxd_pow2(fxd_p);
+        tmp = pow(2.0, fxd5_26_to_dbl(fxd_p));
 
-    //     printf("%d,// pow2(%5.10f) = %5.10f  , %d %5.10f\n",  dbl_to_fxd(tmp), fxd5_26_to_dbl(fxd_p), tmp , i, fxd_to_dbl(fxd_pow2(fxd_p)));  /*, fxd_log2(dbl_to_fix(it))*/
-    // }
+        printf("%d,// pow2(%5.10f) = %5.10f  , %d %5.10f\n",  dbl_to_fxd(tmp), fxd5_26_to_dbl(fxd_p), tmp , 0, fxd_to_dbl(fxd_pow2(fxd_p)));  /*, fxd_log2(dbl_to_fix(it))*/
+    
+
+    for(int i = -1; i  >= (-1<<22); i <<= 1){
+        fxd_p = i  + (-1<<22);
+        tmp_pow = fxd_pow2(fxd_p);
+        tmp = pow(2.0, fxd5_26_to_dbl(fxd_p));
+
+        printf("%d,// pow2(%5.10f) = %5.10f  , %d %5.10f\n",  dbl_to_fxd(tmp), fxd5_26_to_dbl(fxd_p), tmp , i, fxd_to_dbl(fxd_pow2(fxd_p)));  /*, fxd_log2(dbl_to_fix(it))*/
+    }
 
     double delta = 0;
     double delta_no_interp = 0;

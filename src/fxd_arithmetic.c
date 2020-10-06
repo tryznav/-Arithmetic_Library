@@ -203,16 +203,12 @@ fxd_q31_t   fxd_pow2(fxd_q5_26_t  n){
     assert(n < 0); 
 
     int32_t index = -(n>>22);
-    int32_t interp_factor = (-n & INTERP_FACTOR_MASK_LOG) ;
+    int32_t interp_factor = (n & INTERP_FACTOR_MASK_LOG) ;
     int64_t tmp = 0;
 
-    if(interp_factor){
-        tmp = POW2_FXD_Q26[index - 1] - POW2_FXD_Q26[index];
-        tmp = (tmp * interp_factor) >> 22;
-        tmp =  POW2_FXD_Q26[index - 1] - tmp;
-    } else {
-        tmp =  POW2_FXD_Q26[index];
-    }
+    tmp = POW2_FXD_Q26[index - 1] - POW2_FXD_Q26[index];
+    tmp = tmp - ((tmp * interp_factor) >> 22);
+    tmp =  POW2_FXD_Q26[index - 1] - tmp;
     return (fxd_q31_t )tmp;
 }
 
