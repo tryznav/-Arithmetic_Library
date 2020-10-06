@@ -203,18 +203,9 @@ fxd_q31_t   fxd_pow2(fxd_q5_26_t  n){
     assert(n < 0); 
 
     int32_t index = -(n>>22);
-    // int32_t index2 = 512 + (n>>22);
     int32_t interp_factor = (-n & INTERP_FACTOR_MASK_LOG) ;
     int64_t tmp = 0;
-    // int64_t tmp2 = 0;
 
-    
-    // print_n(interp_factor);
-    // printf("%d\n", index);
-    // printf("(n>>22) %d %d\n", index2, POW_INVERT[index2]);
-    // tmp2 =  POW_INVERT[index2 + 1] + POW_INVERT[index2];
-    // tmp2 = (tmp2 * interp_factor) >> 22;
-    // tmp2 =  POW_INVERT[index] +  tmp2;
     if(interp_factor){
         tmp = POW2_FXD_Q26[index - 1] - POW2_FXD_Q26[index];
         tmp = (tmp * interp_factor) >> 22;
@@ -222,7 +213,6 @@ fxd_q31_t   fxd_pow2(fxd_q5_26_t  n){
     } else {
         tmp =  POW2_FXD_Q26[index];
     }
-    // printf( "%lli %lli \n",tmp2, tmp );
     return (fxd_q31_t )tmp;
 }
 
@@ -231,9 +221,8 @@ fxd_q31_t   fxd_pow2(fxd_q5_26_t  n){
 fxd_q5_26_t   fxd_log2(fxd_q31_t n){
     assert(n > 0);
 
-    uint32_t ns = (uint32_t)n - 1;
-    int32_t index = (ns>>22);
-    int32_t interp_factor = ns & INTERP_FACTOR_MASK;
+    int32_t index = (n>>22);
+    int32_t interp_factor = n & INTERP_FACTOR_MASK;
     int64_t tmp = 0;
 
     tmp = LOG2_FXD_Q27[index + 1] - LOG2_FXD_Q27[index];
@@ -348,9 +337,9 @@ fxd_q5_26_t   fxd_log2_no_interp(fxd_q31_t n){
 
     assert(n > 0);
 
-    uint32_t ns = (uint32_t)n - 1;
-    int32_t index = (ns>>22);
-    int32_t interp_factor = ns & INTERP_FACTOR_MASK;
+    // uint32_t ns = (uint32_t)n - 1;
+    int32_t index = (n>>22);
+    int32_t interp_factor = n & INTERP_FACTOR_MASK;
     int64_t tmp = 0;
 
     tmp = LOG2_FXD_Q27[index] + tmp;
@@ -436,7 +425,7 @@ double fxd5_26_to_dbl(int32_t val){
 
 /***********************************************/
 
-fxd_q31_t   dbl_to_fxd4_27(double input)
+fxd_q31_t   dbl_to_fxd5_26(double input)
 {
     return (fxd_q31_t)(input * (1u << 26));
 }

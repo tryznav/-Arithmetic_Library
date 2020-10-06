@@ -50,11 +50,13 @@ int main(){
 
     // int64_t i = fxd_mac(0, INT32_MIN, INT32_MIN);
     // printf("int %lli %d\n", i, INT32_MAX);
-    test_pow2();
-    fxd_pow2(-1);
+    // test_pow2();
+    // fxd_pow2(-1);
+    test_log2();
     // for(int i = 512; i >= 0; i--){
     //     printf( "%d, \n", POW2_FXD_Q26[i]);
     // }
+        
 }
 static int32_t test_div(){
     int32_t res_q31 = 0;
@@ -104,7 +106,11 @@ static int32_t test_log2(){
     int32_t tmp_log = 0;
     
     for (int32_t i = 0; i <= 511; i++){
-        fxd_p = (i<<22) + 1;
+        
+        fxd_p = (i<<22);
+        if(i == 0){
+            fxd_p = 1;
+        }
         tmp_log = fxd_log2(fxd_p);
         tmp = log2(fxd_to_dbl(fxd_p));
         printf("%d,// log2(%5.10f) = %5.10f my  %5.10f\n",  dbl_to_fxd5_26(tmp), fxd_to_dbl(fxd_p),  log2(fxd_to_dbl(fxd_p)),   fxd5_26_to_dbl(tmp_log));
