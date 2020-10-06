@@ -232,7 +232,7 @@ fxd_q63_t   fxd63_sub(fxd_q63_t a, fxd_q63_t b);
 
 double      fxd5_26_to_dbl(int32_t val);
 
-fxd_q31_t   dbl_to_fxd5_26(double input);
+fxd_q5_26_t   dbl_to_fxd5_26(double input);
 
 //print 
 

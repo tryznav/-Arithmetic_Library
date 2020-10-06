@@ -337,7 +337,6 @@ fxd_q5_26_t   fxd_log2_no_interp(fxd_q31_t n){
 
     assert(n > 0);
 
-    // uint32_t ns = (uint32_t)n - 1;
     int32_t index = (n>>22);
     int32_t interp_factor = n & INTERP_FACTOR_MASK;
     int64_t tmp = 0;
@@ -425,9 +424,9 @@ double fxd5_26_to_dbl(int32_t val){
 
 /***********************************************/
 
-fxd_q31_t   dbl_to_fxd5_26(double input)
+fxd_q5_26_t   dbl_to_fxd5_26(double input)
 {
-    return (fxd_q31_t)(input * (1u << 26));
+    return (fxd_q5_26_t)(input * (1u << 26));
 }
 
 /***********************************************/

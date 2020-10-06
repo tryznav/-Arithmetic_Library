@@ -100,6 +100,10 @@ static int32_t test_pow(){
     return 0;
 }
 
+static double abs_diff(double n, double d){
+    return fabs(fabs(n) - fabs(d));
+}
+
 static int32_t test_log2(){
     int32_t fxd_p = 0;
     double tmp = 0;
@@ -132,6 +136,35 @@ static int32_t test_log2(){
         tmp = log2(fxd_to_dbl(fxd_p));
         printf("%d,// log2(%5.10f) = %5.10f my  %5.10f\n",  dbl_to_fxd5_26(tmp), fxd_to_dbl(fxd_p),  log2(fxd_to_dbl(fxd_p)),   fxd5_26_to_dbl(tmp_log));
     }
+
+    double delta = 0;
+    double delta_no_interp = 0;
+    double real_val = 0;
+    double real_val_no_interp = 0;
+    double average_no_interp = 0;
+    double average = 0;
+
+    for (int32_t i = 1; i < (INT32_MAX/16); i++){
+        double tmp =  abs_diff(log2(fxd_to_dbl(i)), fxd5_26_to_dbl(fxd_log2(i)));
+        if(tmp > delta){
+            delta = tmp;
+            real_val = log2(fxd_to_dbl(i));
+            // printf("%f %f %f\n", fxd5_26_to_dbl(fxd_log2(i)), log2(fxd_to_dbl(i)),  fxd_to_dbl(i));
+        }
+        average += tmp ;
+        tmp = abs_diff(log2(fxd_to_dbl(i)), fxd5_26_to_dbl(fxd_log2_no_interp(i)));
+        if(tmp > delta_no_interp){
+            //  printf(" delta_no_interp %f\n",  delta_no_interp);
+            delta_no_interp = tmp;
+            real_val_no_interp = log2(fxd_to_dbl(i));
+        }
+        average_no_interp += tmp ;
+    }
+    printf(" delta_no_interp %f\n",  delta_no_interp);
+    average_no_interp = average_no_interp / (INT32_MAX/16);
+    average = average / (INT32_MAX/16);
+    printf("\nModule  DELTA interp %5.10f %5.10f average = %f\n",delta, (delta/real_val*100),  average);
+    printf("\nModule  DELTA  no interp %5.10f %5.10f average = %f\n",delta_no_interp, (delta_no_interp/real_val_no_interp*100), average_no_interp);
     return 0;
 }
 
@@ -156,31 +189,31 @@ static int32_t test_pow2(){
     //     printf("%d,// pow2(%5.10f) = %5.10f  , %d %5.10f\n",  dbl_to_fxd(tmp), fxd5_26_to_dbl(fxd_p), tmp , i, fxd_to_dbl(fxd_pow2(fxd_p)));  /*, fxd_log2(dbl_to_fix(it))*/
     // }
 
-    // double delta = 0;
-    // double delta_no_interp = 0;
-    // double real_val = 0;
-    // double real_val_no_interp = 0;
-    // double average_no_interp = 0;
-    // double average = 0;
+    double delta = 0;
+    double delta_no_interp = 0;
+    double real_val = 0;
+    double real_val_no_interp = 0;
+    double average_no_interp = 0;
+    double average = 0;
 
-    // for (int32_t i = -1; i > (INT32_MIN/4); i--){
-    //     double tmp = fabs(pow(2.0, fxd5_26_to_dbl(i))) -  fabs(fxd_to_dbl(fxd_pow2(i)));
-    //     if(tmp > delta){
-    //         delta = tmp;
-    //         real_val = (pow(2.0, fxd5_26_to_dbl(i)));
-    //     }
-    //     average += tmp ;
-    //     tmp = fabs(pow(2.0, fxd5_26_to_dbl(i))) -  fabs(fxd_to_dbl(fxd_pow2_no_interp(i)));
-    //     if(tmp > delta_no_interp){
-    //         delta_no_interp = tmp;
-    //         real_val_no_interp =(pow(2.0, fxd5_26_to_dbl(i)));
-    //     }
-    //     average_no_interp += tmp ;
-    // }
-    // average_no_interp = average_no_interp / (-INT32_MIN/4);
-    // average = average / (-INT32_MIN/4);
-    // printf("\nModule  DELTA interp %5.10f %5.10f average = %f\n",delta, (delta/real_val*100),  average);
-    // printf("\nModule  DELTA  no interp %5.10f %5.10f average = %f\n",delta_no_interp, (delta_no_interp/real_val_no_interp*100), average_no_interp);
+    for (int32_t i = -1; i > (INT32_MIN/4); i--){
+        double tmp = fabs(pow(2.0, fxd5_26_to_dbl(i))) -  fabs(fxd_to_dbl(fxd_pow2(i)));
+        if(tmp > delta){
+            delta = tmp;
+            real_val = (pow(2.0, fxd5_26_to_dbl(i)));
+        }
+        average += tmp ;
+        tmp = fabs(pow(2.0, fxd5_26_to_dbl(i))) -  fabs(fxd_to_dbl(fxd_pow2_no_interp(i)));
+        if(tmp > delta_no_interp){
+            delta_no_interp = tmp;
+            real_val_no_interp =(pow(2.0, fxd5_26_to_dbl(i)));
+        }
+        average_no_interp += tmp ;
+    }
+    average_no_interp = average_no_interp / (-INT32_MIN/4);
+    average = average / (-INT32_MIN/4);
+    printf("\nModule  DELTA interp %5.10f %5.10f average = %f\n",delta, (delta/real_val*100),  average);
+    printf("\nModule  DELTA  no interp %5.10f %5.10f average = %f\n",delta_no_interp, (delta_no_interp/real_val_no_interp*100), average_no_interp);
     return 0;
 }
 
